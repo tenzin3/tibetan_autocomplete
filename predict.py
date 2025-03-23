@@ -13,12 +13,13 @@ def get_client():
 def get_completion(client: Anthropic, tibetan_text: str)->str:
     prompt = f"""
             Complete this Tibetan sentence with the single most natural and 
-            commonly used ending word or particle: {tibetan_text}
+            commonly used ending words or particles: {tibetan_text}
             This revised prompt:
             1. Specifies that you want only the single most natural completion
-            2. Clarifies you're looking for just the ending word/particle (not multiple options)
+            2. Clarifies you're looking for just the ending words/particles (not multiple options)
             3. Maintains context that this is a Tibetan sentence
             4. Eliminates the possibility of getting explanations about the phrase
+            5. Dont include the input text in the output
     """
     
     message = client.messages.create(
@@ -43,7 +44,7 @@ def main(input_text: str) -> str:
 
 
 if __name__ == "__main__":
-    input_text = "ང་སྐྱིད་པོ་"
+    input_text = "དཀོན་མཆོག་གསུམ་ནི་"
     completion = main(input_text)
     print(completion)
     
