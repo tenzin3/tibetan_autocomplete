@@ -71,13 +71,8 @@ python editor.py
 
 ## Example Usage
 
-```python
-# Tibetan text completion
-ང་སྐྱིད་པོ་ # (nga skyid po)
+![autocomplete pic](https://github.com/user-attachments/assets/67959113-40b1-42f2-9b88-4bfac7476af2)
 
-# English text completion
-The quick brown fox jumps over
-```
 
 ## Contributing
 
