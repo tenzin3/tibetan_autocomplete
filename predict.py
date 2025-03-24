@@ -53,11 +53,40 @@ def get_english_completion(client: Anthropic, english_text: str)->str:
     """
     return get_llm_response(client, prompt)
 
+def is_gibberish(client: Anthropic, text: str, language: Literal["tibetan", "english"] = "english") -> bool:
+    """Check if the given text is gibberish using LLM.
+    
+    Args:
+        client: Anthropic client instance
+        text: Text to check
+        language: Language of the text ('tibetan' or 'english')
+    
+    Returns:
+        bool: True if text is gibberish, False otherwise
+    """
+    prompt = f"""
+    Analyze if the following {language} text is gibberish (meaningless, random characters, or nonsensical text) or not.
+    Text: {text}
+    
+    Instructions:
+    1. Consider the text's grammar, word combinations, and overall meaning
+    2. For Tibetan text, check if it uses valid Tibetan syllables and grammar
+    3. For English text, check if it uses valid English words and grammar
+    4. Respond with ONLY 'true' if it's gibberish or 'false' if it's valid text
+    5. Do not provide any explanation, just return 'true' or 'false'
+    """
+    
+    response = get_llm_response(client, prompt).strip().lower()
+    return response == 'true'
+
 def main(input_text: str, language: Literal["tibetan", "english"] = "english") -> str:
     client = get_client()
 
     # If input text is empty, return empty string
     if not input_text.strip():
+        return ""
+
+    if is_gibberish(client, input_text, language):
         return ""
 
     if language == "tibetan":
@@ -66,8 +95,24 @@ def main(input_text: str, language: Literal["tibetan", "english"] = "english") -
         return get_english_completion(client, input_text)
 
 if __name__ == "__main__":
+    client = get_client()
 
-    # Test English completion
-    english_text = "The quick brown fox jumps over"
-    english_completion = main(english_text)
-    print(f"English completion: {english_completion}")
+
+    # Test gibberish detection
+    print("\nTesting gibberish detection:")
+    
+    # Test valid English
+    valid_english = "The sky is blue today"
+    print(f"Valid English: '{valid_english}' -> Is gibberish? {is_gibberish(client, valid_english, 'english')}")
+    
+    # Test gibberish English
+    gibberish_english = "asdf qwerty blorp zxcv"
+    print(f"Gibberish English: '{gibberish_english}' -> Is gibberish? {is_gibberish(client, gibberish_english, 'english')}")
+    
+    # Test valid Tibetan
+    valid_tibetan = "ང་སྐྱིད་པོ་"
+    print(f"Valid Tibetan: '{valid_tibetan}' -> Is gibberish? {is_gibberish(client, valid_tibetan, 'tibetan')}")
+    
+    # Test gibberish Tibetan
+    gibberish_tibetan = "ཨཨཨ་པཔཔ་སསས་"
+    print(f"Gibberish Tibetan: '{gibberish_tibetan}' -> Is gibberish? {is_gibberish(client, gibberish_tibetan, 'tibetan')}")
