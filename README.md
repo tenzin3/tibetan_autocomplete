@@ -43,12 +43,23 @@ export ANTHROPIC_API_KEY='your-api-key-here'
 python editor.py
 ```
 
-2. Features:
-   - Type text in Tibetan or English
-   - Wait 1.5 seconds after typing to see AI suggestions
-   - Press Tab to accept the suggestion
-   - Use File menu to open/save documents
-   - Use Edit menu for undo/redo operations
+2. Writing and Autocomplete:
+   - Type any text in Tibetan or English
+   - After 1.5 seconds of pause in typing, a grey-colored suggestion appears
+   - Press the Tab key to accept and insert the suggested completion
+   - If you don't want the suggestion, just keep typing and it will disappear
+
+3. File Operations:
+   - Save your work using File → Save or File → Save As...
+   - Files are saved as .txt format with full UTF-8 support
+   - You can write and save any type of text content
+   - Open existing .txt files using File → Open
+   - Create new documents with File → New
+
+4. Additional Features:
+   - Undo/Redo support for all text operations
+   - Real-time gibberish detection
+   - Clean interface with intuitive controls
 
 ## Code Structure
 
