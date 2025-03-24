@@ -53,10 +53,11 @@ class TextEditor:
         self.edit_menu.add_command(label="Redo", command=self.redo)
 
         # Prediction state
-        self.last_prediction_time = 0
-        self.prediction_delay = 0.5  # seconds
+        self.last_keystroke_time = 0
+        self.prediction_delay = 1.5  # seconds
         self.current_suggestion = ""
         self.prediction_thread = None
+        self.prediction_timer = None
 
     def get_current_line(self) -> str:
         """Get the current line of text up to the cursor."""
@@ -68,14 +69,25 @@ class TextEditor:
         if event.keysym == 'Tab':
             return 'break'
 
-        # Clear old prediction thread if it exists
-        if self.prediction_thread and self.prediction_thread.is_alive():
-            return
+        # Cancel any existing prediction timer
+        if self.prediction_timer:
+            self.root.after_cancel(self.prediction_timer)
 
-        # Start new prediction thread
+        # Update last keystroke time
+        self.last_keystroke_time = time.time()
+
+        # Set a new timer for prediction
+        self.prediction_timer = self.root.after(int(self.prediction_delay * 1000), self.check_and_predict)
+
+    def check_and_predict(self):
+        """Check if enough time has passed since last keystroke and start prediction."""
         current_time = time.time()
-        if current_time - self.last_prediction_time > self.prediction_delay:
-            self.last_prediction_time = current_time
+        if current_time - self.last_keystroke_time >= self.prediction_delay:
+            # Clear old prediction thread if it exists
+            if self.prediction_thread and self.prediction_thread.is_alive():
+                return
+
+            # Start new prediction thread
             self.prediction_thread = threading.Thread(target=self.update_suggestion)
             self.prediction_thread.start()
 
