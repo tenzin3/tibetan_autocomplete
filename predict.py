@@ -55,6 +55,11 @@ def get_english_completion(client: Anthropic, english_text: str)->str:
 
 def main(input_text: str, language: Literal["tibetan", "english"] = "english") -> str:
     client = get_client()
+
+    # If input text is empty, return empty string
+    if not input_text.strip():
+        return ""
+
     if language == "tibetan":
         return get_tibetan_completion(client, input_text)
     else:
